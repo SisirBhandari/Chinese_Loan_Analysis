@@ -1,0 +1,255 @@
+---
+title: "Chinese Loan and its Implication"
+author: "Sisir Bhandari"
+date: "2023-04-04"
+output: ioslides_presentation
+---
+
+```{r setup1, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+```
+
+```{r setup2, include=FALSE}
+library(tidyverse)
+library(pacman)
+library(readxl)
+library(ggplot2)
+library(gridExtra)
+library(scales)
+```
+
+```{r setup3, include=FALSE}
+china<- read_excel("~/Desktop/American University /second/Data Analysis/Assignments/Assignment 5/China_Inv.xlsx")
+```
+
+## Chinese Overseas Loan
+- Chinese International Financial Investments and Loan
+- Two Policy Banks 
+  (Chinese Development Bank and Export Import Bank)
+- Time Series Data
+  2008 to 2021
+- South Asian Countries Overview
+- Sri Lanka and Pakistan as a Case
+- Implications
+- Sources: Boston University, Global China Initiative
+https://www.bu.edu/gdp/research/gci/
+IMF and The World Bank
+
+
+```{r setup4, include=FALSE}
+#Subsetting
+#CDB and CHEXIM Investments in Asia
+asia <- subset(china, 
+    china$COUNTRIES %in% c("Bangladesh") | 
+(row.names(china) >= 156 & row.names(china) <= 177)|
+      china$COUNTRIES %in% c("Maldives") | 
+(row.names(china) >= 936 & row.names(china) <= 942) |
+china$COUNTRIES %in% c("Nepal") | 
+(row.names(china) >= 1029 & row.names(china) <= 1034) |
+china$COUNTRIES %in% c("Sri Lanka") | 
+(row.names(china) >= 1231 & row.names(china) <= 1285) |
+  china$COUNTRIES %in% c("Pakistan") | 
+(row.names(china) >= 1072 & row.names(china) <= 1107))
+```
+
+```{r setup5, include=FALSE}
+asia <- asia[-c(1:13), ]
+asia$AMOUNT <- as.numeric(gsub("[\\$M]", "", asia$AMOUNT))
+```
+
+```{r setup6, include=FALSE}
+# Before Bangladesh and other countries
+start_row <- which(asia$COUNTRIES == "Bangladesh")[1]
+end_row <- min(which(asia$COUNTRIES %in% c("Maldives"))) - 1
+bng <- asia[start_row:end_row, ]
+colnames(bng)[1] <- "Bangladesh"
+bng <- slice(bng, -1)
+```
+
+```{r setup7, include=FALSE}
+start_row <- which(asia$COUNTRIES == "Maldives")[1]
+end_row <- min(which(asia$COUNTRIES %in% c("Nepal"))) - 1
+mal <- asia[start_row:end_row, ]
+colnames(mal)[1] <- "Maldives"
+mal <- slice(mal, -1)
+```
+
+```{r setup8, include=FALSE}
+start_row <- which(asia$COUNTRIES == "Nepal")[1]
+end_row <- min(which(asia$COUNTRIES %in% c("Pakistan"))) - 1
+nep <- asia[start_row:end_row, ]
+colnames(nep)[1] <- "Nepal"
+nep <- slice(nep, -1)
+```
+
+```{r setup9, include=FALSE}
+start_row <- which(asia$COUNTRIES == "Pakistan")[1]
+end_row <- min(which(asia$COUNTRIES %in% c("Sri Lanka"))) - 1
+pak <- asia[start_row:end_row, ]
+colnames(pak)[1] <- "Pakistan"
+pak <- slice(pak, -1)
+```
+
+```{r setup01, include=FALSE}
+start_row <- which(asia$COUNTRIES == "Sri Lanka")[1]
+end_row <- nrow(asia)
+sln <- asia[start_row:end_row, ]
+colnames(sln)[1] <- "Sri Lanka"
+sln <- slice(sln, -1)
+```
+
+## Chinese Investment in Five South Asian Countries
+```{r setup02, include=TRUE}
+chexim <- subset(asia, LENDER == 'CHEXIM')
+cdb <- subset(asia, LENDER == 'CDB')
+```
+
+```{r setup03, include=TRUE}
+chexim <- filter(asia, LENDER == 'CHEXIM')
+cdb<- filter(asia, LENDER == 'CDB')
+```
+
+```{r setup04, include=TRUE}
+#total
+tchexim<- sum(chexim$AMOUNT)
+tcdb <- sum(cdb$AMOUNT)
+tinv <- data.frame(
+  LENDER = c("CHEXIM", "CDB"),
+  tinve = c(tchexim, tcdb)
+)
+ggplot(tinv, aes(x=LENDER, y=tinve)) +
+  geom_bar(stat="identity", fill="#AE4371") +
+  labs(title="CDB and CHEXIM Investments - South Asia", x="Lender", y="Total Investment") +
+  theme(plot.background = element_rect(fill = "#E8F8F5"),
+axis.title = element_text(face = "bold"))
+```
+
+
+
+```{r setup05, include=FALSE}
+ta <-sum(sln$AMOUNT)
+#12,283
+```
+
+
+```{r setup06, include=FALSE}
+t1 <-sum(mal$AMOUNT)
+#951
+```
+
+```{r setup07, include=FALSE}
+na.omit(bng)
+t2 <-sum(bng$AMOUNT)
+#15452
+```
+
+```{r setup08, include=FALSE}
+na.omit(nep)
+t3 <-sum(nep$AMOUNT)
+#366
+```
+
+
+```{r setup09, include=FALSE}
+t4 <-sum(pak$AMOUNT)
+#22,635
+```
+
+## Country cases
+
+
+```{r setup21, include=TRUE}
+cf <- data.frame(
+  Country = c("Sri Lanka", "Pakistan", "Nepal", "Bangladesh", "Maldives"),
+  Loan = c(12283, 22635, 366, 15452, 951)
+)
+ggplot(cf, aes(x = Country, y = Loan, fill = Country)) +
+  geom_point(shape = 21, color = "black", size = 4, alpha = 0.7) +
+  scale_fill_manual(values = c("Sri Lanka" = "red", "Pakistan" = "blue", "Nepal" = "green", "Bangladesh" = "orange", "Maldives" = "purple")) +
+  labs(title = "Loan by Country", x = "", y = "Amount") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 5),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10),
+    plot.background = element_rect(fill = "#E8F8F5"),
+    panel.background = element_rect(fill = "white")
+  ) +
+  coord_cartesian(ylim = c(0, 25000)) +
+  guides(fill = guide_legend(title = "Country", ncol = 5))
+```
+
+
+## Taking Pakistan and Sri Lanka as a case
+
+```{r setup20, include=FALSE}
+five<- read_excel("~/Desktop/American University /second/Data Analysis/Assignments/Assignment 5/FIVE.xlsx")
+```
+
+
+```{r setup31, include=TRUE}
+ggplot(five, aes(x = year, y = investment, color = country)) +
+  geom_line(size = 1, na.rm = TRUE) +
+  scale_color_manual(values = c("Pakistan" = "blue", "Sri Lanka" = "red")) +
+  labs(title = "Chinese Investment over Time", x = "Year", y = "Investment (millions USD)") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 5),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10),
+    plot.background = element_rect(fill = "#E8F8F5"),
+    panel.background = element_rect(fill = "white")
+  )
+                
+
+```
+
+## Pakistan and Sri Lanka External Debt
+
+```{r setup=33, include=FALSE}
+seven<- read_excel("~/Desktop/American University /second/Data Analysis/Assignments/Assignment 5/seven.xlsx")
+```
+
+
+```{r setup46, include=TRUE}
+seven$Debt <- seven$Debt/1000000000
+```
+
+```{r setup=35, include=TRUE}
+ggplot(seven, aes(x = Year, y = Debt, color = Country)) +
+  geom_line(size = 1) +
+  scale_color_manual(values = c("Pakistan" = "blue", "Sri Lanka" = "red")) +
+  labs(title = "Sri Lanka and Pakistan Debt", x = "Year", y = "Billions USD") +
+  scale_y_continuous(labels = comma) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 5),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10),
+    plot.background = element_rect(fill = "#E8F8F5"),
+    panel.background = element_rect(fill = "white")
+  )
+```
+
+## Economic and Sovereign Debt Crisis
+- Risky loans with higher interest rates
+- Structural Adjustment Policies Overlook
+- Lack of good governance and high corruption
+- Geopolitics pawn
+
+## Sources
+- Boston University, Global China Initiative
+- International Monetary Fund, Article IV Report
+- The World Bank
+
+
