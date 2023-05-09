@@ -5,6 +5,8 @@ The presentation aims to show the Chinese loan influence in external debt of Sou
 The repository contains a R markdown files and a Data folder. This was a part of my SIS-750 Data Analysis course assignment taught by Prof Austin Hart. 
 
 # Presentation
+In this work, I used the R-markdown package but also use the R-studio for data wrangligng and cleaning.
+
 The R-markdown file "Presentation_Chinese_Loan.Rmd" contains a comprehensive analysis of Chinese lending in South Asia and its impact on the external debt of selected countries. The analysis focuses on South Asian countries, excluding India, with particular emphasis on Sri Lanka and Pakistan. The output of the analysis is available in an HTML file, which presents the results of the study. The data used in the analysis is available in the "Data" folder. The loans analyzed are restricted to those provided by the China Export Import Bank (CHEXIM) and the China Development Bank (CDB).
 
 The analysis provides a detailed assessment of Chinese lending practices in the region, and the ways in which these loans have contributed to the external debt burden of the countries analyzed. The study sheds light on the extent to which Chinese lending has been a driver of economic growth in South Asia, as well as the potential risks and challenges associated with such lending practices. Overall, the analysis provides valuable insights into the dynamics of Chinese lending in the region and its impact on the broader economic and political landscape of South Asia.
